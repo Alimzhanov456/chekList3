@@ -1827,7 +1827,7 @@ async function firebasePush(data) {
 
 async function firebaseGetAll() {
   try {
-    const res = await fetch(FIREBASE_URL + CHAT_PATH + '.json?orderBy="ts"&limitToLast=200');
+    const res = await fetch(FIREBASE_URL + CHAT_PATH + '.json');
     if (!res.ok) return [];
     const data = await res.json();
     if (!data) return [];
