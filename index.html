@@ -35,12 +35,40 @@
   --shadow-sm: 0 1px 2px rgba(60,50,30,0.06);
 }
 
+body.dark {
+  --bg: #111010;
+  --surface: #1c1b19;
+  --surface2: #242320;
+  --surface3: #2e2c28;
+  --border: rgba(255,245,220,0.08);
+  --border2: rgba(255,245,220,0.15);
+  --text: #f0ebe3;
+  --muted: #7a6f60;
+  --muted2: #a09080;
+  --green: #3db87a;
+  --green-dim: rgba(61,184,122,0.12);
+  --green-glow: rgba(61,184,122,0.22);
+  --orange: #e07a20;
+  --orange-dim: rgba(224,122,32,0.12);
+  --blue: #4a90d9;
+  --blue-dim: rgba(74,144,217,0.12);
+  --purple: #9b6fe8;
+  --purple-dim: rgba(155,111,232,0.12);
+  --red: #e05050;
+  --red-dim: rgba(224,80,80,0.12);
+  --yellow: #c9960a;
+  --yellow-dim: rgba(201,150,10,0.12);
+  --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+}
+
 body {
   background: var(--bg);
   color: var(--text);
   font-family: 'Onest', sans-serif;
   min-height: 100vh;
   padding-bottom: 100px;
+  transition: background .3s, color .3s;
 }
 
 /* ── TOP HEADER ── */
@@ -53,12 +81,11 @@ body {
   z-index: 100;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  transition: background .3s;
 }
+body.dark .top-header { background: rgba(17,16,16,0.92); }
 
-.top-header-inner {
-  max-width: 800px;
-  margin: 0 auto;
-}
+.top-header-inner { max-width: 800px; margin: 0 auto; }
 
 .top-meta {
   display: flex;
@@ -67,12 +94,7 @@ body {
   gap: 8px;
   margin-bottom: 8px;
 }
-
-.top-meta-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+.top-meta-left { display: flex; align-items: center; gap: 8px; }
 
 .pulse-dot {
   width: 8px; height: 8px;
@@ -94,7 +116,8 @@ body {
   color: var(--muted);
 }
 
-/* Nav button to other page */
+.top-meta-right { display: flex; align-items: center; gap: 6px; }
+
 .nav-btn {
   display: flex;
   align-items: center;
@@ -114,12 +137,24 @@ body {
   box-shadow: var(--shadow-sm);
   flex-shrink: 0;
 }
-.nav-btn:hover {
-  border-color: var(--border2);
-  color: var(--green);
-  background: var(--surface2);
-}
+.nav-btn:hover { border-color: var(--border2); color: var(--green); background: var(--surface2); }
 .nav-btn svg { width: 13px; height: 13px; }
+
+/* Dark toggle */
+.theme-btn {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted2);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all .18s;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+.theme-btn:hover { border-color: var(--border2); color: var(--text); background: var(--surface2); }
+.theme-btn svg { width: 15px; height: 15px; }
 
 .top-title {
   font-size: 19px;
@@ -129,11 +164,7 @@ body {
   margin-bottom: 12px;
 }
 
-.kpi-strip {
-  display: flex;
-  gap: 7px;
-  flex-wrap: wrap;
-}
+.kpi-strip { display: flex; gap: 7px; flex-wrap: wrap; }
 
 .kpi-chip {
   display: flex;
@@ -147,25 +178,13 @@ body {
   font-weight: 600;
   box-shadow: var(--shadow-sm);
 }
-
 .kpi-chip .kpi-icon { font-size: 12px; }
 .kpi-chip .kpi-val { color: var(--green); font-family: 'JetBrains Mono', monospace; }
 .kpi-chip .kpi-label { color: var(--muted); font-weight: 400; }
 
 /* ── PROGRESS ── */
-.prog-bar-wrap {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 12px;
-}
-.prog-track {
-  flex: 1;
-  height: 4px;
-  background: var(--surface3);
-  border-radius: 99px;
-  overflow: hidden;
-}
+.prog-bar-wrap { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+.prog-track { flex: 1; height: 4px; background: var(--surface3); border-radius: 99px; overflow: hidden; }
 .prog-fill {
   height: 100%;
   background: var(--green);
@@ -173,20 +192,61 @@ body {
   transition: width .4s cubic-bezier(.34,1.56,.64,1);
   width: 0%;
 }
-.prog-label {
-  font-size: 11px;
-  font-family: 'JetBrains Mono', monospace;
-  color: var(--muted);
-  white-space: nowrap;
-}
+.prog-label { font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--muted); white-space: nowrap; }
 .prog-label span { color: var(--green); font-weight: 600; }
 
-/* ── LAYOUT ── */
-.content {
+/* ── POMODORO ── */
+.pomodoro-bar {
   max-width: 800px;
   margin: 0 auto;
-  padding: 24px 24px 0;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
 }
+.pomo-label { font-size: 11px; font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+.pomo-time { font-size: 22px; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: var(--text); min-width: 60px; }
+.pomo-time.running { color: var(--green); }
+.pomo-time.break { color: var(--blue); }
+.pomo-time.urgent { color: var(--red); animation: blink .8s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+.pomo-btn {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  color: var(--muted2);
+  font-family: 'Onest', sans-serif;
+  font-size: 11px; font-weight: 600;
+  padding: 5px 11px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all .18s;
+  white-space: nowrap;
+}
+.pomo-btn:hover { background: var(--surface3); color: var(--text); }
+.pomo-btn.active { background: var(--green); border-color: var(--green); color: #fff; }
+.pomo-btn svg { width: 12px; height: 12px; }
+
+.pomo-mode-btns { display: flex; gap: 4px; }
+.pomo-mode-btn {
+  font-size: 10px; font-family: 'JetBrains Mono', monospace; font-weight: 600;
+  padding: 3px 9px; border-radius: 50px;
+  background: var(--surface3); border: 1px solid var(--border);
+  color: var(--muted); cursor: pointer; transition: all .15s;
+}
+.pomo-mode-btn.sel { background: var(--green-dim); border-color: rgba(42,124,90,.3); color: var(--green); }
+
+.pomo-track { flex: 1; height: 3px; background: var(--surface3); border-radius: 99px; overflow: hidden; min-width: 40px; }
+.pomo-fill { height: 100%; background: var(--green); border-radius: 99px; transition: width .5s linear; }
+.pomo-fill.break { background: var(--blue); }
+
+.pomo-count { font-size: 10px; font-family: 'JetBrains Mono', monospace; color: var(--muted); white-space: nowrap; }
+
+/* ── LAYOUT ── */
+.content { max-width: 800px; margin: 0 auto; padding: 24px 24px 0; }
 
 /* ── BLOCK ── */
 .block { margin-bottom: 26px; }
@@ -199,12 +259,23 @@ body {
   padding: 14px 18px;
   border-radius: 12px;
   border: 1px solid;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity .2s;
 }
-
+.block-head:hover { opacity: .85; }
 .block-head.morning  { background: rgba(184,92,0,.06);   border-color: rgba(184,92,0,.18); }
 .block-head.afternoon{ background: rgba(26,95,168,.06);  border-color: rgba(26,95,168,.18); }
 .block-head.sp       { background: rgba(107,63,191,.06); border-color: rgba(107,63,191,.18); }
 .block-head.result   { background: rgba(42,124,90,.06);  border-color: rgba(42,124,90,.18); }
+
+.block-collapse-icon {
+  width: 20px; height: 20px;
+  color: var(--muted);
+  transition: transform .25s;
+  flex-shrink: 0;
+}
+.block.collapsed .block-collapse-icon { transform: rotate(-90deg); }
 
 .block-icon {
   font-size: 20px;
@@ -214,7 +285,6 @@ body {
   flex-shrink: 0;
 }
 .morning  .block-icon { background: rgba(184,92,0,.1); }
-.afternoon.block-icon,
 .afternoon .block-icon { background: rgba(26,95,168,.1); }
 .sp       .block-icon { background: rgba(107,63,191,.1); }
 .result   .block-icon { background: rgba(42,124,90,.1); }
@@ -230,15 +300,14 @@ body {
 
 .block-kpi { display: flex; gap: 6px; flex-wrap: wrap; }
 .mini-kpi {
-  font-size: 10px;
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 600;
-  padding: 3px 9px;
-  border-radius: 50px;
-  background: var(--surface);
-  color: var(--muted2);
+  font-size: 10px; font-family: 'JetBrains Mono', monospace; font-weight: 600;
+  padding: 3px 9px; border-radius: 50px;
+  background: var(--surface); color: var(--muted2);
   border: 1px solid var(--border);
 }
+
+.block-body { overflow: hidden; transition: max-height .3s cubic-bezier(.4,0,.2,1), opacity .25s; max-height: 9999px; opacity: 1; }
+.block.collapsed .block-body { max-height: 0; opacity: 0; pointer-events: none; }
 
 /* ── CARD ── */
 .card {
@@ -267,94 +336,53 @@ body {
 .item.done { background: rgba(42,124,90,.05); }
 .item.done:hover { background: rgba(42,124,90,.09); }
 
-/* sub-items */
 .sub-items { padding: 0 16px 10px 52px; display: none; }
 .item.open + .sub-items { display: block; }
 .sub-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-  user-select: none;
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+  cursor: pointer; user-select: none;
 }
 .sub-item:last-child { border-bottom: none; }
-.sub-item:hover .sub-check { border-color: var(--border2); }
 
 .sub-check {
-  width: 18px; height: 18px;
-  border-radius: 5px;
+  width: 18px; height: 18px; border-radius: 5px;
   border: 1.5px solid var(--border2);
-  flex-shrink: 0;
-  margin-top: 1px;
+  flex-shrink: 0; margin-top: 1px;
   display: flex; align-items: center; justify-content: center;
   transition: all .2s;
 }
 .sub-item.done .sub-check { background: var(--green); border-color: var(--green); }
-.sub-check svg {
-  width: 11px; height: 11px;
-  stroke: #fff; stroke-width: 2.5;
-  stroke-linecap: round; stroke-linejoin: round;
-  opacity: 0; transform: scale(.5);
-  transition: all .2s cubic-bezier(.34,1.56,.64,1);
-}
+.sub-check svg { width: 11px; height: 11px; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transform: scale(.5); transition: all .2s cubic-bezier(.34,1.56,.64,1); }
 .sub-item.done .sub-check svg { opacity: 1; transform: scale(1); }
 .sub-text { font-size: 12.5px; color: var(--muted2); line-height: 1.5; }
 .sub-item.done .sub-text { text-decoration: line-through; color: var(--muted); opacity: .6; }
 
-.item-arrow {
-  width: 16px; height: 16px;
-  flex-shrink: 0;
-  margin-top: 3px;
-  color: var(--muted);
-  transition: transform .2s;
-}
+.item-arrow { width: 16px; height: 16px; flex-shrink: 0; margin-top: 3px; color: var(--muted); transition: transform .2s; }
 .item.open .item-arrow { transform: rotate(90deg); }
 
 .item-num {
-  width: 26px; height: 26px;
-  border-radius: 7px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
+  width: 26px; height: 26px; border-radius: 7px;
+  background: var(--surface2); border: 1px solid var(--border);
   display: flex; align-items: center; justify-content: center;
-  font-size: 10px; font-weight: 700;
-  color: var(--muted2);
+  font-size: 10px; font-weight: 700; color: var(--muted2);
   font-family: 'JetBrains Mono', monospace;
-  flex-shrink: 0;
-  margin-top: 1px;
-  transition: all .2s;
+  flex-shrink: 0; margin-top: 1px; transition: all .2s;
 }
-.item.done .item-num {
-  background: var(--green);
-  border-color: var(--green);
-  color: #fff;
-}
+.item.done .item-num { background: var(--green); border-color: var(--green); color: #fff; }
 
 .item-body { flex: 1; min-width: 0; }
-.item-title {
-  font-size: 13.5px; font-weight: 600;
-  color: var(--text); line-height: 1.4;
-  transition: color .2s, opacity .2s;
-}
-.item.done .item-title {
-  color: var(--muted2);
-  text-decoration: line-through;
-  text-decoration-color: rgba(42,124,90,.35);
-  opacity: .7;
-}
+.item-title { font-size: 13.5px; font-weight: 600; color: var(--text); line-height: 1.4; transition: color .2s, opacity .2s; }
+.item.done .item-title { color: var(--muted2); text-decoration: line-through; text-decoration-color: rgba(42,124,90,.35); opacity: .7; }
 .item-hint { font-size: 11.5px; color: var(--muted); margin-top: 3px; line-height: 1.45; }
 .item.done .item-hint { opacity: .45; }
 
 .item-badge {
   font-size: 10px; font-weight: 700;
   font-family: 'JetBrains Mono', monospace;
-  padding: 3px 9px;
-  border-radius: 50px;
-  flex-shrink: 0;
-  letter-spacing: .03em;
-  white-space: nowrap;
-  margin-top: 1px;
+  padding: 3px 9px; border-radius: 50px;
+  flex-shrink: 0; letter-spacing: .03em;
+  white-space: nowrap; margin-top: 1px;
   border: 1px solid transparent;
 }
 .badge-green  { background: var(--green-dim);  color: var(--green);  border-color: rgba(42,124,90,.2); }
@@ -365,156 +393,115 @@ body {
 .badge-yellow { background: var(--yellow-dim); color: var(--yellow); border-color: rgba(149,104,0,.2); }
 
 .item-check {
-  width: 22px; height: 22px;
-  border-radius: 6px;
+  width: 22px; height: 22px; border-radius: 6px;
   border: 1.5px solid var(--border2);
-  flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  transition: all .2s cubic-bezier(.34,1.56,.64,1);
-  margin-top: 1px;
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  transition: all .2s cubic-bezier(.34,1.56,.64,1); margin-top: 1px;
 }
 .item.done .item-check { background: var(--green); border-color: var(--green); }
-.item-check svg {
-  width: 13px; height: 13px;
-  stroke: #fff; stroke-width: 2.5;
-  stroke-linecap: round; stroke-linejoin: round;
-  opacity: 0; transform: scale(.5);
-  transition: all .2s cubic-bezier(.34,1.56,.64,1);
-}
+.item-check svg { width: 13px; height: 13px; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transform: scale(.5); transition: all .2s cubic-bezier(.34,1.56,.64,1); }
 .item.done .item-check svg { opacity: 1; transform: scale(1); }
 
 /* ── DIVIDER ── */
 .divider { display: flex; align-items: center; gap: 10px; margin: 22px 0 12px; }
 .divider-line { flex: 1; height: 1px; background: var(--border); }
-.divider-label {
-  font-size: 10px; font-family: 'JetBrains Mono', monospace;
-  font-weight: 600; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--muted);
-}
+.divider-label { font-size: 10px; font-family: 'JetBrains Mono', monospace; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 
 /* ── SP GRID ── */
-.sp-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 10px;
-}
+.sp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
 .sp-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px;
-  cursor: pointer;
-  transition: all .15s;
-  user-select: none;
-  box-shadow: var(--shadow-sm);
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px; cursor: pointer;
+  transition: all .15s; user-select: none; box-shadow: var(--shadow-sm);
 }
 .sp-card:hover { background: var(--surface2); border-color: var(--border2); }
 .sp-card.done { background: rgba(42,124,90,.07); border-color: rgba(42,124,90,.22); }
-
 .sp-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
 .sp-card-icon { font-size: 18px; }
-.sp-card-check {
-  width: 20px; height: 20px;
-  border-radius: 6px;
-  border: 1.5px solid var(--border2);
-  display: flex; align-items: center; justify-content: center;
-  transition: all .2s;
-}
+.sp-card-check { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border2); display: flex; align-items: center; justify-content: center; transition: all .2s; }
 .sp-card.done .sp-card-check { background: var(--green); border-color: var(--green); }
-.sp-card-check svg {
-  width: 11px; height: 11px;
-  stroke: #fff; stroke-width: 2.5;
-  stroke-linecap: round; stroke-linejoin: round;
-  opacity: 0; transform: scale(.5);
-  transition: all .2s cubic-bezier(.34,1.56,.64,1);
-}
+.sp-card-check svg { width: 11px; height: 11px; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transform: scale(.5); transition: all .2s cubic-bezier(.34,1.56,.64,1); }
 .sp-card.done .sp-card-check svg { opacity: 1; transform: scale(1); }
 .sp-card-title { font-size: 12.5px; font-weight: 600; color: var(--text); line-height: 1.4; }
 .sp-card.done .sp-card-title { color: var(--muted2); opacity: .7; }
 .sp-card-hint { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.45; }
 
 /* ── STATS MONITOR ── */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-bottom: 14px;
-}
-.stat-box {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px 12px;
-  text-align: center;
-  box-shadow: var(--shadow-sm);
-}
-.stat-val {
-  font-size: 26px; font-weight: 800;
-  font-family: 'JetBrains Mono', monospace;
-  color: var(--green); line-height: 1; margin-bottom: 6px;
-}
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+.stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 12px; text-align: center; box-shadow: var(--shadow-sm); }
+.stat-val { font-size: 26px; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: var(--green); line-height: 1; margin-bottom: 6px; }
 .stat-label { font-size: 11px; color: var(--muted2); line-height: 1.35; }
 
-/* KPI input */
-.kpi-inputs-wrap {
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.kpi-inputs-label {
-  font-size: 12px; color: var(--muted2); font-weight: 600;
-  text-transform: uppercase; letter-spacing: .08em;
-  font-family: 'JetBrains Mono', monospace;
-}
+.kpi-inputs-wrap { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.kpi-inputs-label { font-size: 12px; color: var(--muted2); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; font-family: 'JetBrains Mono', monospace; }
 .kpi-inputs-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
 .kpi-inp-group label { font-size: 11px; color: var(--muted); display: block; margin-bottom: 5px; }
 .kpi-inp {
-  width: 100%;
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  padding: 9px 10px;
-  color: var(--text);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 14px; font-weight: 600;
-  outline: none;
-  transition: border-color .18s;
+  width: 100%; background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 9px 10px; color: var(--text);
+  font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 600;
+  outline: none; transition: border-color .18s;
 }
 .kpi-inp:focus { border-color: var(--green); }
 
 /* ── RESULT GRID ── */
-.result-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-}
-.result-chip {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: var(--shadow-sm);
-}
+.result-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.result-chip { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-sm); }
 .result-chip-icon { font-size: 20px; }
 .result-chip-val { font-size: 18px; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: var(--green); line-height: 1; }
 .result-chip-label { font-size: 11px; color: var(--muted2); margin-top: 3px; line-height: 1.3; }
 
+/* ── CHART ── */
+.chart-wrap {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 18px; margin-bottom: 10px;
+  box-shadow: var(--shadow);
+}
+.chart-title { font-size: 12px; font-weight: 700; color: var(--muted2); text-transform: uppercase; letter-spacing: .08em; font-family: 'JetBrains Mono', monospace; margin-bottom: 14px; }
+.chart-bars { display: flex; align-items: flex-end; gap: 6px; height: 80px; }
+.chart-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.chart-bar-wrap { flex: 1; width: 100%; display: flex; align-items: flex-end; }
+.chart-bar { width: 100%; border-radius: 4px 4px 0 0; background: var(--green-dim); border: 1px solid rgba(42,124,90,.2); min-height: 3px; transition: height .4s cubic-bezier(.34,1.56,.64,1); position: relative; }
+.chart-bar.today { background: var(--green); border-color: var(--green); }
+.chart-bar.full { background: var(--green); border-color: var(--green); }
+.chart-day { font-size: 9px; font-family: 'JetBrains Mono', monospace; color: var(--muted); }
+.chart-val { font-size: 9px; font-family: 'JetBrains Mono', monospace; color: var(--muted); }
+
+/* ── EXPORT ── */
+.export-btn {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--muted2); font-family: 'Onest', sans-serif;
+  font-size: 13px; font-weight: 600; padding: 11px 18px;
+  border-radius: 10px; cursor: pointer; transition: all .18s;
+  box-shadow: var(--shadow-sm); width: 100%; justify-content: center;
+  margin-bottom: 10px;
+}
+.export-btn:hover { border-color: var(--border2); color: var(--green); background: var(--surface2); }
+.export-btn svg { width: 15px; height: 15px; }
+
+.export-output {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px; font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: var(--muted2); line-height: 1.7;
+  white-space: pre-wrap; display: none; position: relative;
+}
+.export-output.visible { display: block; }
+.copy-btn {
+  position: absolute; top: 10px; right: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--muted2); font-size: 11px; font-weight: 600;
+  padding: 4px 10px; border-radius: 6px; cursor: pointer;
+  font-family: 'Onest', sans-serif; transition: all .15s;
+}
+.copy-btn:hover { background: var(--green); color: #fff; border-color: var(--green); }
+
 /* ── DONE BANNER ── */
 .done-banner {
-  display: none;
-  text-align: center;
-  padding: 30px 24px;
-  background: rgba(42,124,90,.07);
-  border: 1px solid rgba(42,124,90,.18);
-  border-radius: 14px;
-  margin-top: 8px;
-  animation: fadeUp .4s ease;
-  box-shadow: var(--shadow);
+  display: none; text-align: center; padding: 30px 24px;
+  background: rgba(42,124,90,.07); border: 1px solid rgba(42,124,90,.18);
+  border-radius: 14px; margin-top: 8px;
+  animation: fadeUp .4s ease; box-shadow: var(--shadow);
 }
 .done-banner.visible { display: block; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
@@ -523,81 +510,33 @@ body {
 
 /* ── TOAST ── */
 #toast {
-  position: fixed;
-  bottom: 24px; left: 50%;
+  position: fixed; bottom: 24px; left: 50%;
   transform: translateX(-50%) translateY(12px);
-  background: var(--text); color: #fff;
-  font-size: 13px; font-weight: 500;
-  padding: 10px 20px;
-  border-radius: 50px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.14);
-  opacity: 0; transition: all 0.25s;
-  pointer-events: none; z-index: 1000;
-  white-space: nowrap;
+  background: var(--text); color: var(--bg);
+  font-size: 13px; font-weight: 500; padding: 10px 20px;
+  border-radius: 50px; box-shadow: 0 4px 20px rgba(0,0,0,0.14);
+  opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 1000; white-space: nowrap;
 }
 #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 /* ── CONFETTI ── */
-.confetti-piece {
-  position: fixed; pointer-events: none; z-index: 9999;
-  animation: confettiFall 1.8s ease-in forwards;
-}
-@keyframes confettiFall {
-  0%{transform:translateY(0) rotate(0deg);opacity:1}
-  100%{transform:translateY(100vh) rotate(720deg);opacity:0}
-}
+.confetti-piece { position: fixed; pointer-events: none; z-index: 9999; animation: confettiFall 1.8s ease-in forwards; }
+@keyframes confettiFall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(720deg);opacity:0} }
 
 /* ── STATS BAR ── */
-.stats-bar {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 12px 24px;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.stat-pill {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: var(--shadow-sm);
-}
+.stats-bar { max-width: 800px; margin: 0 auto; padding: 12px 24px; display: flex; gap: 10px; flex-wrap: wrap; }
+.stat-pill { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow-sm); }
 .stat-pill-val { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1; }
-.stat-pill-lbl {
-  font-size: 10px; color: var(--muted);
-  font-family: 'JetBrains Mono', monospace;
-  text-transform: uppercase; letter-spacing: .06em; margin-top: 2px;
-}
+.stat-pill-lbl { font-size: 10px; color: var(--muted); font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
 
 /* ── FOOTER ── */
-.footer {
-  max-width: 800px;
-  margin: 28px auto 0;
-  padding: 0 24px;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-}
+.footer { max-width: 800px; margin: 28px auto 0; padding: 0 24px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; align-items: center; }
 .footer-note { font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
-
 .reset-btn {
   display: flex; align-items: center; gap: 6px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--muted2);
-  font-family: 'Onest', sans-serif;
-  font-size: 12px; font-weight: 500;
-  padding: 7px 14px;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all .18s;
-  box-shadow: var(--shadow-sm);
+  background: var(--surface); border: 1px solid var(--border); color: var(--muted2);
+  font-family: 'Onest', sans-serif; font-size: 12px; font-weight: 500;
+  padding: 7px 14px; border-radius: 50px; cursor: pointer; transition: all .18s; box-shadow: var(--shadow-sm);
 }
 .reset-btn:hover { border-color: var(--border2); color: var(--text); background: var(--surface2); }
 .reset-btn svg { width: 12px; height: 12px; }
@@ -611,6 +550,8 @@ body {
   .top-title { font-size: 16px; }
   .kpi-chip { font-size: 11px; }
   .footer { padding: 0 16px; }
+  .pomodoro-bar { padding: 10px 16px; }
+  .pomo-track { display: none; }
 }
 </style>
 </head>
@@ -624,10 +565,16 @@ body {
         <div class="pulse-dot"></div>
         <span class="top-badge">Менеджер · Регламент дня</span>
       </div>
-      <a class="nav-btn" href="crm-checklist.html">
-        <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 8h6M5 5.5h4M5 10.5h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-        Регламент заявки
-      </a>
+      <div class="top-meta-right">
+        <button class="theme-btn" onclick="toggleTheme()" title="Сменить тему">
+          <svg id="theme-icon-sun" viewBox="0 0 16 16" fill="none" style="display:none"><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M8 2v1M8 13v1M2 8h1M13 8h1M3.6 3.6l.7.7M11.7 11.7l.7.7M3.6 12.4l.7-.7M11.7 4.3l.7-.7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <svg id="theme-icon-moon" viewBox="0 0 16 16" fill="none"><path d="M13 9a5 5 0 1 1-6-6 4 4 0 0 0 6 6z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <a class="nav-btn" href="crm-checklist.html">
+          <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 8h6M5 5.5h4M5 10.5h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          Регламент заявки
+        </a>
+      </div>
     </div>
     <div class="top-title">Рабочий день — Битрикс 24</div>
     <div class="kpi-strip">
@@ -642,6 +589,26 @@ body {
     </div>
   </div>
 </header>
+
+<!-- POMODORO BAR -->
+<div class="pomodoro-bar">
+  <span class="pomo-label">Помодоро</span>
+  <div class="pomo-time" id="pomo-display">25:00</div>
+  <div class="pomo-mode-btns">
+    <div class="pomo-mode-btn sel" onclick="setPomoMode(25,'work',this)">25м</div>
+    <div class="pomo-mode-btn" onclick="setPomoMode(45,'work',this)">45м</div>
+    <div class="pomo-mode-btn" onclick="setPomoMode(5,'break',this)">5м 🍵</div>
+  </div>
+  <button class="pomo-btn" id="pomo-start-btn" onclick="togglePomo()">
+    <svg viewBox="0 0 12 12" fill="none"><polygon points="3,1 11,6 3,11" fill="currentColor"/></svg>
+    Старт
+  </button>
+  <button class="pomo-btn" onclick="resetPomo()" title="Сбросить">
+    <svg viewBox="0 0 12 12" fill="none"><path d="M1 6a5 5 0 1 0 1.1-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M1 3v3h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="pomo-track"><div class="pomo-fill" id="pomo-fill"></div></div>
+  <span class="pomo-count" id="pomo-count">🍅 0</span>
+</div>
 
 <!-- STATS BAR -->
 <div class="stats-bar">
@@ -666,8 +633,8 @@ body {
 <main class="content">
 
 <!-- ══ УТРО ══ -->
-<div class="block">
-  <div class="block-head morning">
+<div class="block" id="block-morning">
+  <div class="block-head morning" onclick="toggleBlock('block-morning')">
     <div class="block-icon">🌅</div>
     <div class="block-meta">
       <div class="block-title">До обеда — Встречи и звонки</div>
@@ -678,8 +645,9 @@ body {
       <div class="mini-kpi">6 зв. &gt;1 мин</div>
       <div class="mini-kpi">25 наборов</div>
     </div>
+    <svg class="block-collapse-icon" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </div>
-
+  <div class="block-body">
   <div class="card">
     <div class="item" data-key="d1" onclick="toggleItem(this)">
       <div class="item-num">01</div>
@@ -690,7 +658,6 @@ body {
       <span class="item-badge badge-orange">СТАРТ</span>
       <div class="item-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div>
     </div>
-
     <div class="item" data-key="d2" onclick="toggleItem(this)">
       <div class="item-num">02</div>
       <div class="item-body">
@@ -699,7 +666,6 @@ body {
       </div>
       <div class="item-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div>
     </div>
-
     <div class="item" data-key="d3" onclick="toggleItem(this)">
       <div class="item-num">03</div>
       <div class="item-body">
@@ -709,7 +675,6 @@ body {
       <span class="item-badge badge-yellow">10 мин</span>
       <div class="item-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div>
     </div>
-
     <div class="item" data-key="d4" onclick="toggleExpand(this)">
       <div class="item-num">04</div>
       <div class="item-body">
@@ -725,7 +690,6 @@ body {
       <div class="sub-item" onclick="toggleSub(this)"><div class="sub-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div><div class="sub-text">Обзвон минимум 1 раз</div></div>
       <div class="sub-item" onclick="toggleSub(this)"><div class="sub-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div><div class="sub-text">В случае НДЗ — 1 СМС в WhatsApp</div></div>
     </div>
-
     <div class="item" data-key="d5" onclick="toggleExpand(this)">
       <div class="item-num">05</div>
       <div class="item-body">
@@ -740,7 +704,6 @@ body {
       <div class="sub-item" onclick="toggleSub(this)"><div class="sub-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div><div class="sub-text">Обзвон минимум 1 раз</div></div>
       <div class="sub-item" onclick="toggleSub(this)"><div class="sub-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div><div class="sub-text">В случае НДЗ — 1 СМС в WhatsApp</div></div>
     </div>
-
     <div class="item" data-key="d6" onclick="toggleExpand(this)">
       <div class="item-num">06</div>
       <div class="item-body">
@@ -755,7 +718,6 @@ body {
       <div class="sub-item" onclick="toggleSub(this)"><div class="sub-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div><div class="sub-text">Просмотреть заявки без дел — если не на этапе НДЗ, добавить дело</div></div>
       <div class="sub-item" onclick="toggleSub(this)"><div class="sub-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div><div class="sub-text">Завершить все дела до обеда</div></div>
     </div>
-
     <div class="item" data-key="d7" onclick="toggleExpand(this)">
       <div class="item-num">07</div>
       <div class="item-body">
@@ -771,7 +733,6 @@ body {
       <div class="sub-item" onclick="toggleSub(this)"><div class="sub-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div><div class="sub-text">«Подготовка презентации» — почему там застряли? Прозвонить, написать</div></div>
       <div class="sub-item" onclick="toggleSub(this)"><div class="sub-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div><div class="sub-text">«Выявление потребности» — почему там застряли? Прозвонить, написать</div></div>
     </div>
-
     <div class="item" data-key="d8" onclick="toggleItem(this)">
       <div class="item-num">08</div>
       <div class="item-body">
@@ -782,11 +743,12 @@ body {
       <div class="item-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div>
     </div>
   </div>
+  </div>
 </div>
 
 <!-- ══ ПОСЛЕ ОБЕДА ══ -->
-<div class="block">
-  <div class="block-head afternoon">
+<div class="block" id="block-afternoon">
+  <div class="block-head afternoon" onclick="toggleBlock('block-afternoon')">
     <div class="block-icon">☀️</div>
     <div class="block-meta">
       <div class="block-title">После обеда — Генерация денег</div>
@@ -797,8 +759,9 @@ body {
       <div class="mini-kpi">2 встречи</div>
       <div class="mini-kpi">2 КП</div>
     </div>
+    <svg class="block-collapse-icon" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </div>
-
+  <div class="block-body">
   <div class="card">
     <div class="item" data-key="d9" onclick="toggleItem(this)">
       <div class="item-num">09</div>
@@ -818,7 +781,6 @@ body {
       <span class="item-badge badge-yellow">💰 Деньги</span>
       <div class="item-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div>
     </div>
-
     <div class="item" data-key="d12" onclick="toggleExpand(this)">
       <div class="item-num">12</div>
       <div class="item-body"><div class="item-title">Работа с воронкой — генерация денег</div><div class="item-hint">Пройтись по всем денежным этапам</div></div>
@@ -832,7 +794,6 @@ body {
       <div class="sub-item" onclick="toggleSub(this)"><div class="sub-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div><div class="sub-text">«Договор на подписи» — как привести к счёту на оплату?</div></div>
       <div class="sub-item" onclick="toggleSub(this)"><div class="sub-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div><div class="sub-text">«Счёт в оплате» — у всех ли выставлены счета? Все ли документы прикреплены?</div></div>
     </div>
-
     <div class="item" data-key="d13" onclick="toggleItem(this)">
       <div class="item-num">13</div>
       <div class="item-body"><div class="item-title">3-й обзвон новых клиентов + «Первый контакт»</div><div class="item-hint">Можно через WhatsApp</div></div>
@@ -850,7 +811,6 @@ body {
       <div class="item-body"><div class="item-title">Отправка отчёта в группу</div><div class="item-hint">Итоги дня — в общий чат отдела продаж</div></div>
       <div class="item-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div>
     </div>
-
     <div class="item" data-key="d16" onclick="toggleExpand(this)">
       <div class="item-num">16</div>
       <div class="item-body"><div class="item-title">Анализ проделанной работы</div><div class="item-hint">10 минут. Если хоть один KPI не выполнен — прописать причину и решение</div></div>
@@ -862,7 +822,6 @@ body {
       <div class="sub-item" onclick="toggleSub(this)"><div class="sub-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div><div class="sub-text">Выписать и проанализировать что было сделано хорошо</div></div>
       <div class="sub-item" onclick="toggleSub(this)"><div class="sub-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div><div class="sub-text">Если KPI не выполнен — прописать почему и как это решить завтра</div></div>
     </div>
-
     <div class="item" data-key="d17" onclick="toggleItem(this)">
       <div class="item-num">17</div>
       <div class="item-body"><div class="item-title">Привести в порядок рабочее место</div><div class="item-hint">Перед уходом — чтобы не тратить время утром</div></div>
@@ -874,17 +833,20 @@ body {
       <div class="item-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div>
     </div>
   </div>
+  </div>
 </div>
 
 <!-- ══ СП МОНИТОРИНГ ══ -->
-<div class="block">
-  <div class="block-head sp">
+<div class="block" id="block-sp">
+  <div class="block-head sp" onclick="toggleBlock('block-sp')">
     <div class="block-icon">🔍</div>
     <div class="block-meta">
       <div class="block-title">СП «Для отдела продаж» — мониторинг в течение дня</div>
       <div class="block-sub">Проверять регулярно — утром, в обед и перед уходом</div>
     </div>
+    <svg class="block-collapse-icon" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </div>
+  <div class="block-body">
   <div class="sp-grid">
     <div class="sp-card" data-key="sp1" onclick="toggleSP(this)">
       <div class="sp-card-top"><div class="sp-card-icon">💬</div><div class="sp-card-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div></div>
@@ -912,17 +874,20 @@ body {
       <div class="sp-card-hint">Не должно быть встреч, запланированных на сегодня или прошедшие даты — всё должно быть проведено и закрыто</div>
     </div>
   </div>
+  </div>
 </div>
 
 <!-- ══ ДЕТАЛИЗАЦИЯ ЗВОНКОВ ══ -->
-<div class="block">
-  <div class="block-head result">
+<div class="block" id="block-calls">
+  <div class="block-head result" onclick="toggleBlock('block-calls')">
     <div class="block-icon">📊</div>
     <div class="block-meta">
       <div class="block-title">Детализация звонков — проверять ежедневно</div>
       <div class="block-sub">Открыть детализацию в Битрикс 24 и сверить показатели</div>
     </div>
+    <svg class="block-collapse-icon" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </div>
+  <div class="block-body">
   <div class="stats-grid">
     <div class="stat-box"><div class="stat-val" id="calls-val">0</div><div class="stat-label">Звонков<br>от 1 минуты</div></div>
     <div class="stat-box"><div class="stat-val" id="dials-val">0</div><div class="stat-label">Наборов<br>всего</div></div>
@@ -939,17 +904,20 @@ body {
       <div id="kpi-status" style="display:none; padding:10px 14px; border-radius:8px; font-size:12.5px; font-weight:500; line-height:1.5;"></div>
     </div>
   </div>
+  </div>
 </div>
 
 <!-- ══ ИТОГ ДНЯ ══ -->
-<div class="block">
-  <div class="block-head result">
+<div class="block" id="block-result">
+  <div class="block-head result" onclick="toggleBlock('block-result')">
     <div class="block-icon">🏁</div>
     <div class="block-meta">
       <div class="block-title">Результат на конец дня</div>
       <div class="block-sub">Все показатели должны быть достигнуты перед уходом</div>
     </div>
+    <svg class="block-collapse-icon" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </div>
+  <div class="block-body">
   <div class="result-grid">
     <div class="result-chip"><div class="result-chip-icon">📞</div><div><div class="result-chip-val">12</div><div class="result-chip-label">звонков от 1 мин</div></div></div>
     <div class="result-chip"><div class="result-chip-icon">🤝</div><div><div class="result-chip-val">4</div><div class="result-chip-label">встречи назначены</div></div></div>
@@ -957,6 +925,47 @@ body {
     <div class="result-chip"><div class="result-chip-icon">📄</div><div><div class="result-chip-val">2</div><div class="result-chip-label">отправленных КП</div></div></div>
     <div class="result-chip"><div class="result-chip-icon">💰</div><div><div class="result-chip-val">1</div><div class="result-chip-label">сделка закрыта</div></div></div>
     <div class="result-chip"><div class="result-chip-icon">✅</div><div><div class="result-chip-val">0</div><div class="result-chip-label">незавершённых дел</div></div></div>
+  </div>
+  </div>
+</div>
+
+<!-- ══ ГРАФИК ══ -->
+<div class="block" id="block-chart">
+  <div class="block-head result" onclick="toggleBlock('block-chart')">
+    <div class="block-icon">📈</div>
+    <div class="block-meta">
+      <div class="block-title">Выполнение за 7 дней</div>
+      <div class="block-sub">Сколько пунктов выполнено за каждый рабочий день</div>
+    </div>
+    <svg class="block-collapse-icon" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <div class="block-body">
+  <div class="chart-wrap">
+    <div class="chart-title">Выполнено пунктов / день</div>
+    <div class="chart-bars" id="chart-bars"></div>
+  </div>
+  </div>
+</div>
+
+<!-- ══ ЭКСПОРТ ══ -->
+<div class="block" id="block-export">
+  <div class="block-head result" onclick="toggleBlock('block-export')">
+    <div class="block-icon">📤</div>
+    <div class="block-meta">
+      <div class="block-title">Экспорт отчёта</div>
+      <div class="block-sub">Готовый текст для отправки в чат отдела продаж</div>
+    </div>
+    <svg class="block-collapse-icon" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <div class="block-body">
+  <button class="export-btn" onclick="generateExport()">
+    <svg viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 12h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    Сгенерировать отчёт
+  </button>
+  <div class="export-output" id="export-output">
+    <button class="copy-btn" onclick="copyExport()">Копировать</button>
+    <span id="export-text"></span>
+  </div>
   </div>
 </div>
 
@@ -984,22 +993,260 @@ function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
 
 let startTime = null;
 
+// ── SOUND ──
+function playCheck() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.setValueAtTime(880, ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.08);
+    g.gain.setValueAtTime(0.15, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+    o.start(ctx.currentTime);
+    o.stop(ctx.currentTime + 0.18);
+  } catch(e) {}
+}
+
+function playUncheck() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.setValueAtTime(600, ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.1);
+    g.gain.setValueAtTime(0.1, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+    o.start(ctx.currentTime);
+    o.stop(ctx.currentTime + 0.15);
+  } catch(e) {}
+}
+
+// ── THEME ──
+function toggleTheme() {
+  const dark = document.body.classList.toggle('dark');
+  lsSet('theme', dark ? 'dark' : 'light');
+  updateThemeIcon(dark);
+}
+function updateThemeIcon(dark) {
+  document.getElementById('theme-icon-sun').style.display = dark ? 'block' : 'none';
+  document.getElementById('theme-icon-moon').style.display = dark ? 'none' : 'block';
+}
+
+// ── BLOCK COLLAPSE ──
+function toggleBlock(id) {
+  const block = document.getElementById(id);
+  block.classList.toggle('collapsed');
+  const state = lsGet('block_state', {});
+  state[id] = block.classList.contains('collapsed');
+  lsSet('block_state', state);
+}
+
+// ── POMODORO ──
+let pomoInterval = null;
+let pomoSeconds = 25 * 60;
+let pomoTotal = 25 * 60;
+let pomoMode = 'work';
+let pomoRunning = false;
+let pomoCount = lsGet('pomo_count', 0);
+
+function setPomoMode(mins, mode, btn) {
+  if (pomoRunning) return;
+  pomoMode = mode;
+  pomoSeconds = mins * 60;
+  pomoTotal = mins * 60;
+  document.querySelectorAll('.pomo-mode-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  renderPomo();
+}
+
+function togglePomo() {
+  if (pomoRunning) {
+    clearInterval(pomoInterval);
+    pomoRunning = false;
+    document.getElementById('pomo-start-btn').classList.remove('active');
+    document.getElementById('pomo-start-btn').innerHTML = '<svg viewBox="0 0 12 12" fill="none"><polygon points="3,1 11,6 3,11" fill="currentColor"/></svg> Старт';
+  } else {
+    pomoRunning = true;
+    document.getElementById('pomo-start-btn').classList.add('active');
+    document.getElementById('pomo-start-btn').innerHTML = '<svg viewBox="0 0 12 12" fill="none"><rect x="2" y="1" width="3" height="10" fill="currentColor"/><rect x="7" y="1" width="3" height="10" fill="currentColor"/></svg> Пауза';
+    pomoInterval = setInterval(() => {
+      pomoSeconds--;
+      if (pomoSeconds <= 0) {
+        clearInterval(pomoInterval);
+        pomoRunning = false;
+        document.getElementById('pomo-start-btn').classList.remove('active');
+        document.getElementById('pomo-start-btn').innerHTML = '<svg viewBox="0 0 12 12" fill="none"><polygon points="3,1 11,6 3,11" fill="currentColor"/></svg> Старт';
+        if (pomoMode === 'work') {
+          pomoCount++;
+          lsSet('pomo_count', pomoCount);
+          document.getElementById('pomo-count').textContent = '🍅 ' + pomoCount;
+          playPomoDone();
+          showToast('🍅 Помодоро завершён! Сделай перерыв');
+        } else {
+          playPomoDone();
+          showToast('☕ Перерыв закончился — за работу!');
+        }
+        pomoSeconds = 0;
+      }
+      renderPomo();
+    }, 1000);
+  }
+}
+
+function resetPomo() {
+  clearInterval(pomoInterval);
+  pomoRunning = false;
+  pomoSeconds = pomoTotal;
+  document.getElementById('pomo-start-btn').classList.remove('active');
+  document.getElementById('pomo-start-btn').innerHTML = '<svg viewBox="0 0 12 12" fill="none"><polygon points="3,1 11,6 3,11" fill="currentColor"/></svg> Старт';
+  renderPomo();
+}
+
+function renderPomo() {
+  const m = Math.floor(pomoSeconds / 60);
+  const s = pomoSeconds % 60;
+  const el = document.getElementById('pomo-display');
+  el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  el.className = 'pomo-time';
+  if (pomoRunning) {
+    el.classList.add(pomoMode === 'break' ? 'break' : 'running');
+    if (pomoSeconds <= 60 && pomoMode === 'work') el.classList.add('urgent');
+  }
+  const pct = pomoTotal > 0 ? ((pomoTotal - pomoSeconds) / pomoTotal * 100) : 0;
+  const fill = document.getElementById('pomo-fill');
+  fill.style.width = pct + '%';
+  fill.className = 'pomo-fill' + (pomoMode === 'break' ? ' break' : '');
+  document.getElementById('pomo-count').textContent = '🍅 ' + pomoCount;
+}
+
+function playPomoDone() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [0, 0.15, 0.3].forEach((delay, i) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = [660, 880, 1100][i];
+      g.gain.setValueAtTime(0.2, ctx.currentTime + delay);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.25);
+      o.start(ctx.currentTime + delay);
+      o.stop(ctx.currentTime + delay + 0.25);
+    });
+  } catch(e) {}
+}
+
+// ── CHART ──
+function renderChart() {
+  const hist = lsGet('day_history', []);
+  const total = document.querySelectorAll('.item[data-key], .sp-card[data-key]').length || 23;
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = d.toDateString();
+    const short = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'][d.getDay()];
+    const count = hist.filter(h => h.date === key).length;
+    days.push({ label: short, count, isToday: i === 0, key });
+  }
+  const max = Math.max(...days.map(d => d.count), 1);
+  const container = document.getElementById('chart-bars');
+  container.innerHTML = '';
+  days.forEach(day => {
+    const pct = Math.max(day.count / max * 100, day.count > 0 ? 8 : 3);
+    const col = document.createElement('div');
+    col.className = 'chart-col';
+    const isFull = day.count >= total;
+    col.innerHTML = `
+      <div class="chart-bar-wrap">
+        <div class="chart-bar ${day.isToday ? 'today' : ''} ${isFull ? 'full' : ''}" style="height:${pct}%"></div>
+      </div>
+      <div class="chart-val">${day.count || ''}</div>
+      <div class="chart-day" style="${day.isToday ? 'color:var(--green);font-weight:700' : ''}">${day.label}</div>
+    `;
+    container.appendChild(col);
+  });
+}
+
+// ── EXPORT ──
+function generateExport() {
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('ru-RU', {day:'numeric', month:'long'});
+  const calls = document.getElementById('inp-calls').value || '—';
+  const dials = document.getElementById('inp-dials').value || '—';
+  const meets = document.getElementById('inp-meets').value || '—';
+  const done = document.querySelectorAll('.item[data-key].done').length;
+  const total = document.querySelectorAll('.item[data-key]').length;
+  const spDone = document.querySelectorAll('.sp-card[data-key].done').length;
+  const pct = Math.round(done / total * 100);
+
+  const kpiOk = parseInt(calls) >= 12 && parseInt(dials) >= 25 && parseInt(meets) >= 4;
+
+  const text = `📋 Отчёт за ${dateStr}
+
+✅ Регламент: ${done}/${total} пунктов (${pct}%)
+🔍 Мониторинг СП: ${spDone}/5
+
+📞 Звонков >1 мин: ${calls} / план 12
+📲 Наборов: ${dials} / план 25
+🤝 Встреч назначено: ${meets} / план 4
+
+${kpiOk ? '🟢 Все KPI выполнены' : '🟡 Есть невыполненные KPI'}
+
+#отчёт #менеджер #битрикс`;
+
+  document.getElementById('export-text').textContent = text;
+  document.getElementById('export-output').classList.add('visible');
+}
+
+function copyExport() {
+  const text = document.getElementById('export-text').textContent;
+  navigator.clipboard.writeText(text).then(() => showToast('Скопировано!')).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    showToast('Скопировано!');
+  });
+}
+
 // ── INIT ──
 function init() {
+  const theme = lsGet('theme', 'light');
+  if (theme === 'dark') { document.body.classList.add('dark'); updateThemeIcon(true); }
+  else { updateThemeIcon(false); }
+
+  const blockState = lsGet('block_state', {});
+  Object.keys(blockState).forEach(id => {
+    if (blockState[id]) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('collapsed');
+    }
+  });
+
   const state = lsGet('day_state', {});
   document.querySelectorAll('.item[data-key], .sp-card[data-key]').forEach(el => {
     const k = el.dataset.key;
     if (state[k] === 'done') el.classList.add('done');
     if (state[k] === 'open') el.classList.add('open');
   });
+
   const kpi = lsGet('day_kpi', {});
-  if (kpi.calls !== undefined) { document.getElementById('inp-calls').value = kpi.calls; }
-  if (kpi.dials !== undefined) { document.getElementById('inp-dials').value = kpi.dials; }
-  if (kpi.meets !== undefined) { document.getElementById('inp-meets').value = kpi.meets; }
+  if (kpi.calls !== undefined) document.getElementById('inp-calls').value = kpi.calls;
+  if (kpi.dials !== undefined) document.getElementById('inp-dials').value = kpi.dials;
+  if (kpi.meets !== undefined) document.getElementById('inp-meets').value = kpi.meets;
   updateStats();
+
   startTime = lsGet('day_start', null);
+  pomoCount = lsGet('pomo_count', 0);
+  renderPomo();
   loadStats();
   updateProgress();
+  renderChart();
 }
 
 function saveState() {
@@ -1018,8 +1265,10 @@ function saveState() {
 // ── TOGGLE ──
 function toggleItem(el) {
   if (!startTime) { startTime = Date.now(); lsSet('day_start', startTime); }
+  const wasDone = el.classList.contains('done');
   el.classList.remove('open');
   el.classList.toggle('done');
+  wasDone ? playUncheck() : playCheck();
   saveState();
   updateProgress();
 }
@@ -1027,6 +1276,7 @@ function toggleItem(el) {
 function toggleExpand(el) {
   if (el.classList.contains('done')) {
     el.classList.remove('done', 'open');
+    playUncheck();
   } else {
     el.classList.toggle('open');
   }
@@ -1035,36 +1285,31 @@ function toggleExpand(el) {
 }
 
 function toggleSub(el) {
+  const wasDone = el.classList.contains('done');
   el.classList.toggle('done');
-  
-  // Найти родительский .sub-items контейнер
+  wasDone ? playUncheck() : playCheck();
+
   const subItems = el.closest('.sub-items');
   if (!subItems) return;
-  
-  // Найти предшествующий .item (родительский пункт с дропдауном)
   const parentItem = subItems.previousElementSibling;
   if (!parentItem || !parentItem.classList.contains('item')) return;
-  
-  // Проверить, все ли sub-items отмечены
   const all = subItems.querySelectorAll('.sub-item');
   const done = subItems.querySelectorAll('.sub-item.done');
-  
   if (all.length > 0 && all.length === done.length) {
-    // Все отмечены — отмечаем родителя как done
     parentItem.classList.add('done');
     parentItem.classList.remove('open');
   } else {
-    // Не все отмечены — снимаем done с родителя
     parentItem.classList.remove('done');
   }
-  
   saveState();
   updateProgress();
 }
 
 function toggleSP(el) {
   if (!startTime) { startTime = Date.now(); lsSet('day_start', startTime); }
+  const wasDone = el.classList.contains('done');
   el.classList.toggle('done');
+  wasDone ? playUncheck() : playCheck();
   saveState();
   updateProgress();
 }
@@ -1089,6 +1334,7 @@ function updateProgress() {
     banner.classList.remove('visible');
     banner.dataset.celebrated = '';
   }
+  renderChart();
 }
 
 // ── KPI ──
@@ -1108,11 +1354,11 @@ function updateStats() {
   if (calls||dials||meets) {
     box.style.display = 'block';
     if (!issues.length) {
-      box.style.background='rgba(42,124,90,.08)'; box.style.color='#2a7c5a';
+      box.style.background='rgba(42,124,90,.08)'; box.style.color='var(--green)';
       box.style.border='1px solid rgba(42,124,90,.2)';
       box.innerHTML='✅ Все KPI выполнены — отличный день!';
     } else {
-      box.style.background='rgba(184,92,0,.07)'; box.style.color='#b85c00';
+      box.style.background='rgba(184,92,0,.07)'; box.style.color='var(--orange)';
       box.style.border='1px solid rgba(184,92,0,.18)';
       box.innerHTML='⚠️ Не выполнено:<br>'+issues.join('<br>');
     }
@@ -1126,6 +1372,7 @@ function resetAll() {
   ['inp-calls','inp-dials','inp-meets'].forEach(id=>document.getElementById(id).value='');
   lsSet('day_kpi', {});
   startTime=null; lsSet('day_start',null);
+  document.getElementById('export-output').classList.remove('visible');
   updateStats(); updateProgress();
   window.scrollTo({top:0,behavior:'smooth'});
   showToast('День сброшен');
