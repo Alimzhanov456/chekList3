@@ -1760,24 +1760,24 @@ function confetti(){
 }
 
 // ══════════════════════════════════════════
-// CHAT WIDGET LOGIC
+// CHAT WIDGET — Firebase Realtime Database
 // ══════════════════════════════════════════
 
-const CHAT_KEY = 'team_chat_messages_v1';
+const FIREBASE_URL = 'https://cheklist-1f2ef-default-rtdb.europe-west1.firebasedatabase.app';
+const CHAT_PATH = '/chat/messages';
 const NAME_KEY = 'chat_user_name';
 const LAST_READ_KEY = 'chat_last_read_ts';
 
-// Палитра цветов для аватаров
 const AVATAR_COLORS = [
   '#2a7c5a','#1a5fa8','#6b3fbf','#b85c00',
   '#c0392b','#0e7490','#7c3aed','#065f46'
 ];
 
 let chatOpen = false;
-let chatMessages = [];
-let chatPollInterval = null;
 let lastReadTs = 0;
 let myName = '';
+let chatSSE = null;
+let renderedKeys = new Set();
 
 function getAvatarColor(name) {
   let hash = 0;
@@ -1795,13 +1795,10 @@ function getInitials(name) {
 function formatTime(ts) {
   const d = new Date(ts);
   const now = new Date();
-  const isToday = d.toDateString() === now.toDateString();
   const hh = String(d.getHours()).padStart(2,'0');
   const mm = String(d.getMinutes()).padStart(2,'0');
-  if (isToday) return hh + ':' + mm;
-  const dd = String(d.getDate()).padStart(2,'0');
-  const mo = String(d.getMonth()+1).padStart(2,'0');
-  return dd + '.' + mo + ' ' + hh + ':' + mm;
+  if (d.toDateString() === now.toDateString()) return hh + ':' + mm;
+  return String(d.getDate()).padStart(2,'0') + '.' + String(d.getMonth()+1).padStart(2,'0') + ' ' + hh + ':' + mm;
 }
 
 function formatDate(ts) {
@@ -1810,49 +1807,59 @@ function formatDate(ts) {
   const yesterday = new Date(now); yesterday.setDate(now.getDate()-1);
   if (d.toDateString() === now.toDateString()) return 'Сегодня';
   if (d.toDateString() === yesterday.toDateString()) return 'Вчера';
-  const days = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
   const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
   return d.getDate() + ' ' + months[d.getMonth()];
 }
 
-function loadChatMessages() {
+function escapeHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');
+}
+
+// ── Firebase REST helpers ──
+async function firebasePush(data) {
+  const res = await fetch(FIREBASE_URL + CHAT_PATH + '.json', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  return res.ok;
+}
+
+async function firebaseGetAll() {
   try {
-    const raw = localStorage.getItem(CHAT_KEY);
-    return raw ? JSON.parse(raw) : [];
+    const res = await fetch(FIREBASE_URL + CHAT_PATH + '.json?orderBy="ts"&limitToLast=200');
+    if (!res.ok) return [];
+    const data = await res.json();
+    if (!data) return [];
+    return Object.entries(data)
+      .map(([key, val]) => ({ key, ...val }))
+      .sort((a, b) => a.ts - b.ts);
   } catch { return []; }
 }
 
-function saveChatMessages(msgs) {
-  try {
-    // Хранить максимум 200 сообщений
-    if (msgs.length > 200) msgs = msgs.slice(-200);
-    localStorage.setItem(CHAT_KEY, JSON.stringify(msgs));
-  } catch(e) {}
-}
-
-function renderChatMessages() {
+// ── Render ──
+function renderMessages(msgs) {
   const container = document.getElementById('chat-messages');
   const empty = document.getElementById('chat-empty');
-  const msgs = loadChatMessages();
-  chatMessages = msgs;
 
-  if (msgs.length === 0) {
+  if (!msgs.length) {
     empty.style.display = 'flex';
-    // Remove old messages
     [...container.children].forEach(c => { if (c !== empty) c.remove(); });
+    renderedKeys.clear();
     return;
   }
   empty.style.display = 'none';
 
-  // Rebuild — diff by count for performance
-  const existingCount = container.querySelectorAll('.chat-msg, .chat-date-sep').length;
-  if (existingCount === countRenderables(msgs)) return; // No new messages
+  // Only append new messages
+  let lastSep = container.querySelector('.chat-date-sep:last-of-type');
+  let lastDateLabel = lastSep ? lastSep.textContent : null;
+  let addedAny = false;
 
-  // Clear and rebuild
-  [...container.children].forEach(c => { if (c !== empty) c.remove(); });
-
-  let lastDateLabel = null;
   msgs.forEach(msg => {
+    if (renderedKeys.has(msg.key)) return;
+    renderedKeys.add(msg.key);
+    addedAny = true;
+
     const dateLabel = formatDate(msg.ts);
     if (dateLabel !== lastDateLabel) {
       const sep = document.createElement('div');
@@ -1865,13 +1872,10 @@ function renderChatMessages() {
     const isOwn = msg.name === myName && myName !== '';
     const el = document.createElement('div');
     el.className = 'chat-msg' + (isOwn ? ' own' : '');
-
     const color = getAvatarColor(msg.name || '?');
-    const initials = getInitials(msg.name || '?');
-
     el.innerHTML = `
       <div class="chat-msg-head">
-        <div class="chat-msg-avatar" style="background:${color}">${initials}</div>
+        <div class="chat-msg-avatar" style="background:${color}">${getInitials(msg.name || '?')}</div>
         <span class="chat-msg-author">${escapeHtml(msg.name || 'Аноним')}</span>
         <span class="chat-msg-time">${formatTime(msg.ts)}</span>
       </div>
@@ -1880,70 +1884,60 @@ function renderChatMessages() {
     container.appendChild(el);
   });
 
-  container.scrollTop = container.scrollHeight;
+  if (addedAny) container.scrollTop = container.scrollHeight;
 }
 
-function countRenderables(msgs) {
-  let count = msgs.length;
-  let lastDate = null;
-  msgs.forEach(m => {
-    const d = formatDate(m.ts);
-    if (d !== lastDate) { count++; lastDate = d; }
-  });
-  return count;
-}
+async function refreshMessages() {
+  const msgs = await firebaseGetAll();
+  renderMessages(msgs);
 
-function escapeHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');
-}
-
-function updateUnreadBadge() {
-  const msgs = loadChatMessages();
-  const unread = msgs.filter(m => m.ts > lastReadTs && m.name !== myName).length;
-  const badge = document.getElementById('chat-unread');
-  if (unread > 0 && !chatOpen) {
-    badge.textContent = unread > 9 ? '9+' : unread;
-    badge.classList.add('visible');
-  } else {
-    badge.classList.remove('visible');
+  // Unread badge
+  if (!chatOpen) {
+    const unread = msgs.filter(m => m.ts > lastReadTs && m.name !== myName).length;
+    const badge = document.getElementById('chat-unread');
+    if (unread > 0) {
+      badge.textContent = unread > 9 ? '9+' : unread;
+      badge.classList.add('visible');
+    } else {
+      badge.classList.remove('visible');
+    }
   }
 }
 
-function markAllRead() {
-  const msgs = loadChatMessages();
-  if (msgs.length > 0) {
+function markAllRead(msgs) {
+  if (msgs && msgs.length) {
     lastReadTs = msgs[msgs.length - 1].ts;
     lsSet(LAST_READ_KEY, lastReadTs);
   }
   document.getElementById('chat-unread').classList.remove('visible');
 }
 
-function sendChatMessage() {
+// ── Send ──
+async function sendChatMessage() {
   const inp = document.getElementById('chat-inp');
   const text = inp.value.trim();
   if (!text) return;
+
+  const btn = document.getElementById('chat-send-btn');
+  btn.disabled = true;
 
   const name = document.getElementById('chat-name-inp').value.trim() || 'Аноним';
   myName = name;
   lsSet(NAME_KEY, name);
 
   const msg = { ts: Date.now(), name, text };
-  const msgs = loadChatMessages();
-  msgs.push(msg);
-  saveChatMessages(msgs);
-
   inp.value = '';
   inp.style.height = '38px';
 
-  lastReadTs = msg.ts;
-  lsSet(LAST_READ_KEY, lastReadTs);
-
-  renderChatMessages();
-  updateUnreadBadge();
-
-  // Scroll to bottom
-  const container = document.getElementById('chat-messages');
-  container.scrollTop = container.scrollHeight;
+  const ok = await firebasePush(msg);
+  if (ok) {
+    lastReadTs = msg.ts;
+    lsSet(LAST_READ_KEY, lastReadTs);
+    await refreshMessages();
+  } else {
+    showToast('Ошибка отправки — проверьте интернет');
+  }
+  btn.disabled = false;
 }
 
 function chatKeyDown(e) {
@@ -1959,48 +1953,45 @@ function autoResize(el) {
 }
 
 function saveName() {
-  const name = document.getElementById('chat-name-inp').value.trim();
-  myName = name;
-  lsSet(NAME_KEY, name);
+  myName = document.getElementById('chat-name-inp').value.trim();
+  lsSet(NAME_KEY, myName);
 }
+
+// ── Open/Close ──
+let chatPollInterval = null;
 
 function toggleChat() {
   chatOpen = !chatOpen;
-  const modal = document.getElementById('chat-modal');
-  modal.classList.toggle('open', chatOpen);
+  document.getElementById('chat-modal').classList.toggle('open', chatOpen);
 
   if (chatOpen) {
-    markAllRead();
-    renderChatMessages();
+    document.getElementById('chat-unread').classList.remove('visible');
+    refreshMessages().then(async () => {
+      const msgs = await firebaseGetAll();
+      markAllRead(msgs);
+    });
     document.getElementById('chat-inp').focus();
-    // Poll for new messages every 3s while open
     if (!chatPollInterval) {
       chatPollInterval = setInterval(() => {
+        refreshMessages();
         if (chatOpen) {
-          renderChatMessages();
-          markAllRead();
+          firebaseGetAll().then(msgs => markAllRead(msgs));
         }
       }, 3000);
     }
-  } else {
-    // Update unread after close
-    updateUnreadBadge();
   }
 }
 
 function chatInit() {
   myName = lsGet(NAME_KEY, '');
   lastReadTs = lsGet(LAST_READ_KEY, 0);
-
   const nameInp = document.getElementById('chat-name-inp');
   if (myName) nameInp.value = myName;
 
-  updateUnreadBadge();
-
-  // Poll for unread badge every 5s
-  setInterval(() => {
-    if (!chatOpen) updateUnreadBadge();
-  }, 5000);
+  // First load + badge check
+  refreshMessages();
+  // Poll for unread badge every 8s
+  setInterval(refreshMessages, 8000);
 }
 
 init();
