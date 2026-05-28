@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Регламент CRM · Битрикс 24</title>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f5f3ef;
+  --surface: #ffffff;
+  --surface2: #f0ede8;
+  --surface3: #e8e4dd;
+  --border: rgba(60,50,30,0.1);
+  --border-hover: rgba(60,50,30,0.18);
+  --text: #1a1612;
+  --muted: #8c8070;
+  --muted2: #6b5f50;
+  --accent: #2a7c5a;
+  --accent-light: #e8f5ee;
+  --accent-mid: rgba(42,124,90,0.15);
+  --warn: #b86c00;
+  --warn-bg: #fff4e0;
+  --warn-border: rgba(184,108,0,0.2);
+  --danger: #c0392b;
+  --danger-bg: #fdf0ee;
+  --danger-border: rgba(192,57,43,0.2);
+  --info: #1a5fa8;
+  --info-bg: #edf4ff;
+  --info-border: rgba(26,95,168,0.2);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(60,50,30,0.07), 0 4px 16px rgba(60,50,30,0.05);
+  --shadow-sm: 0 1px 2px rgba(60,50,30,0.06);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Onest', sans-serif;
+  min-height: 100vh;
+  padding: 0 0 100px;
+}
+
+/* ── HEADER ── */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(245,243,239,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+}
+
+.header-inner {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 16px 0 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.logo-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.logo-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2.5s infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:0.5; transform:scale(0.8); }
+}
+
+.logo-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-ghost {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted2);
+  font-family: 'Onest', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 7px 13px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.18s;
+  white-space: nowrap;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-ghost:hover {
+  border-color: var(--border-hover);
+  color: var(--text);
+  background: var(--surface2);
+}
+
+.btn-ghost svg { width: 13px; height: 13px; }
+
+/* ── TEMPLATES ROW ── */
+.template-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.template-label {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tpl-btn {
+  font-family: 'Onest', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.18s;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted2);
+  box-shadow: var(--shadow-sm);
+}
+
+.tpl-btn:hover { border-color: var(--border-hover); color: var(--text); }
+.tpl-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* ── PROGRESS ── */
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progress-track {
+  flex: 1;
+  height: 4px;
+  background: var(--surface3);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 99px;
+  transition: width 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  width: 0%;
+}
+
+.progress-text {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--muted);
+  white-space: nowrap;
+  min-width: 52px;
+  text-align: right;
+}
+
+.progress-text span { color: var(--accent); font-weight: 600; }
+
+/* ── STATS BAR ── */
+.stats-bar {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.stat-pill {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-icon {
+  font-size: 16px;
+}
+
+.stat-body {}
+.stat-val {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+
+.stat-lbl {
+  font-size: 10px;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+}
+
+/* ── CONTENT ── */
+.content {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 4px 24px 0;
+}
+
+/* ── SECTION ── */
+.section { margin-bottom: 8px; }
+
+.section-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 4px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.section-toggle:hover .section-label { color: var(--muted2); }
+
+.section-line { flex: 1; height: 1px; background: var(--border); }
+
+.section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: color 0.18s;
+}
+
+.section-chevron {
+  width: 14px; height: 14px;
+  color: var(--muted);
+  transition: transform 0.25s;
+}
+
+.section.collapsed .section-chevron { transform: rotate(-90deg); }
+
+.section-body {
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.2s;
+  max-height: 2000px;
+  opacity: 1;
+}
+
+.section.collapsed .section-body {
+  max-height: 0;
+  opacity: 0;
+}
+
+/* ── CARD ── */
+.checklist-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow);
+}
+
+/* ── ITEM ── */
+.item {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+  position: relative;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.item:last-child { border-bottom: none; }
+.item:hover { background: var(--surface2); }
+.item.done { background: var(--accent-light); }
+.item.done:hover { background: #ddf0e8; }
+
+.item.skipped { background: #fafaf8; opacity: 0.6; }
+
+/* Number */
+.item-num {
+  width: 27px; height: 27px;
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  flex-shrink: 0;
+  transition: all 0.22s;
+}
+
+.item.done .item-num {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* Text */
+.item-body { flex: 1; min-width: 0; }
+
+.item-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+  transition: all 0.2s;
+}
+
+.item.done .item-title {
+  text-decoration: line-through;
+  text-decoration-color: rgba(42,124,90,0.35);
+  color: var(--muted2);
+}
+
+.item-hint {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 3px;
+  line-height: 1.45;
+}
+
+.item.done .item-hint { opacity: 0.55; }
+
+/* Badge */
+.item-badge {
+  font-size: 10px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  padding: 3px 9px;
+  border-radius: 50px;
+  flex-shrink: 0;
+  letter-spacing: 0.04em;
+  border: 1px solid transparent;
+}
+
+.badge-warn {
+  background: var(--warn-bg);
+  color: var(--warn);
+  border-color: var(--warn-border);
+}
+
+.badge-danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border-color: var(--danger-border);
+}
+
+.badge-info {
+  background: var(--info-bg);
+  color: var(--info);
+  border-color: var(--info-border);
+}
+
+/* Checkbox */
+.item-check {
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border-hover);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  background: transparent;
+}
+
+.item.done .item-check {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.item-check svg {
+  width: 12px; height: 12px;
+  stroke: #fff;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  transform: scale(0.4);
+  transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.item.done .item-check svg { opacity: 1; transform: scale(1); }
+
+/* Skip btn */
+.skip-btn {
+  opacity: 0;
+  font-size: 10px;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 3px 8px;
+  cursor: pointer;
+  font-family: 'Onest', sans-serif;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.item:hover .skip-btn { opacity: 1; }
+.skip-btn:hover { color: var(--danger); border-color: var(--danger-border); background: var(--danger-bg); }
+
+/* ── DEAL ID ── */
+.deal-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 24px;
+  max-width: 740px;
+  margin: 0 auto;
+}
+
+.deal-input {
+  flex: 1;
+  max-width: 260px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 13px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.18s;
+  box-shadow: var(--shadow-sm);
+}
+
+.deal-input:focus { border-color: var(--accent); }
+.deal-input::placeholder { color: var(--muted); }
+
+.deal-label {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── TOAST ── */
+#toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  background: var(--text);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 50px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+  opacity: 0;
+  transition: all 0.25s;
+  pointer-events: none;
+  z-index: 1000;
+  white-space: nowrap;
+}
+
+#toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ── WARN MODAL ── */
+.warn-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(245,243,239,0.8);
+  backdrop-filter: blur(6px);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.warn-modal.visible { display: flex; }
+
+.warn-box {
+  background: var(--surface);
+  border: 1px solid var(--danger-border);
+  border-radius: var(--radius);
+  padding: 28px;
+  max-width: 380px;
+  width: 100%;
+  box-shadow: 0 8px 40px rgba(60,50,30,0.12);
+  animation: popIn 0.2s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+@keyframes popIn {
+  from { opacity:0; transform:scale(0.92); }
+  to { opacity:1; transform:scale(1); }
+}
+
+.warn-box h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--danger);
+  margin-bottom: 10px;
+}
+
+.warn-box p {
+  font-size: 13px;
+  color: var(--muted2);
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+.warn-items {
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: 18px;
+  font-size: 12.5px;
+  color: var(--danger);
+  font-weight: 600;
+  line-height: 1.7;
+}
+
+.warn-actions { display: flex; gap: 8px; }
+
+.btn-continue {
+  flex: 1;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--danger);
+  color: #fff;
+  font-family: 'Onest', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.18s;
+}
+
+.btn-continue:hover { opacity: 0.85; }
+
+.btn-back {
+  flex: 1;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  color: var(--text);
+  font-family: 'Onest', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.btn-back:hover { background: var(--surface3); }
+
+/* ── DONE BANNER ── */
+.done-banner {
+  display: none;
+  text-align: center;
+  padding: 32px 24px;
+  background: var(--accent-light);
+  border: 1px solid rgba(42,124,90,0.18);
+  border-radius: var(--radius);
+  margin-top: 6px;
+  box-shadow: var(--shadow);
+}
+
+.done-banner.visible { display: block; animation: fadeUp 0.4s ease; }
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(10px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+.done-banner-icon { font-size: 36px; margin-bottom: 12px; display: block; }
+
+.done-banner h2 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.done-banner p { font-size: 13px; color: var(--muted2); line-height: 1.55; }
+
+.done-banner .done-meta {
+  margin-top: 14px;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--muted);
+}
+
+/* ── CONFETTI ── */
+.confetti-piece {
+  position: fixed;
+  width: 8px; height: 8px;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 9999;
+  animation: confettiFall 1.8s ease-in forwards;
+}
+
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* ── HOTKEYS HINT ── */
+.hotkeys-hint {
+  text-align: center;
+  padding: 16px 0 0;
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+kbd {
+  display: inline-block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 10px;
+  color: var(--muted2);
+  box-shadow: var(--shadow-sm);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── FOOTER ── */
+.footer {
+  max-width: 740px;
+  margin: 28px auto 0;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.footer-note {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── MOBILE ── */
+@media (max-width: 520px) {
+  .header { padding: 0 16px; }
+  .header-inner { padding: 13px 0 11px; }
+  .header-title { font-size: 16px; }
+  .content { padding: 4px 16px 0; }
+  .deal-row { padding: 10px 16px; }
+  .stats-bar { padding: 12px 16px; }
+  .item { padding: 12px 14px; gap: 10px; }
+  .item-title { font-size: 13px; }
+  .skip-btn { display: none; }
+  .footer { padding: 0 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- WARN MODAL -->
+<div class="warn-modal" id="warn-modal">
+  <div class="warn-box">
+    <h3>⚠️ Важные пункты не выполнены</h3>
+    <p>Следующие обязательные пункты ещё не отмечены:</p>
+    <div class="warn-items" id="warn-list"></div>
+    <p>Вы уверены, что хотите сбросить чеклист?</p>
+    <div class="warn-actions">
+      <button class="btn-back" onclick="closeWarnModal()">← Вернуться</button>
+      <button class="btn-continue" onclick="forceReset()">Сбросить всё равно</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-top">
+      <div>
+        <div class="logo-row">
+          <div class="logo-dot"></div>
+          <span class="logo-label">Битрикс 24 · CRM</span>
+        </div>
+        <h1 class="header-title">Регламент работы с заявкой</h1>
+      </div>
+      <div class="header-actions">
+        <a class="btn-ghost" href="index.html" style="text-decoration:none;">
+          <svg viewBox="0 0 16 16" fill="none" style="width:13px;height:13px"><path d="M8 2L2 8l6 6M2 8h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Регламент дня
+        </a>
+        <button class="btn-ghost" onclick="tryReset()" title="R">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M2 8a6 6 0 1 0 1.5-3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2 4v4h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Сбросить
+        </button>
+      </div>
+    </div>
+    <div class="template-row">
+      <span class="template-label">Шаблон:</span>
+      <button class="tpl-btn active" onclick="setTemplate('all', this)">Полный</button>
+      <button class="tpl-btn" onclick="setTemplate('incoming', this)">Входящий звонок</button>
+      <button class="tpl-btn" onclick="setTemplate('ndz', this)">НДЗ</button>
+      <button class="tpl-btn" onclick="setTemplate('repeat', this)">Повторный клиент</button>
+    </div>
+    <div class="progress-row">
+      <div class="progress-track">
+        <div class="progress-fill" id="prog"></div>
+      </div>
+      <div class="progress-text"><span id="prog-done">0</span>/<span id="prog-total">13</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- DEAL ID -->
+<div class="deal-row">
+  <span class="deal-label">ID сделки:</span>
+  <input class="deal-input" id="deal-id" type="text" placeholder="например: D-4821" maxlength="32"
+    oninput="saveDealId()"
+    onkeydown="if(event.key==='Enter')this.blur()" />
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-pill">
+    <span class="stat-icon">📋</span>
+    <div class="stat-body">
+      <div class="stat-val" id="stat-today">0</div>
+      <div class="stat-lbl">сегодня</div>
+    </div>
+  </div>
+  <div class="stat-pill">
+    <span class="stat-icon">📅</span>
+    <div class="stat-body">
+      <div class="stat-val" id="stat-week">0</div>
+      <div class="stat-lbl">за неделю</div>
+    </div>
+  </div>
+  <div class="stat-pill">
+    <span class="stat-icon">⏱️</span>
+    <div class="stat-body">
+      <div class="stat-val" id="stat-avg">—</div>
+      <div class="stat-lbl">среднее время</div>
+    </div>
+  </div>
+  <div class="stat-pill">
+    <span class="stat-icon">🔥</span>
+    <div class="stat-body">
+      <div class="stat-val" id="stat-streak">0</div>
+      <div class="stat-lbl">дней без просрочек</div>
+    </div>
+  </div>
+</div>
+
+<main class="content">
+
+  <!-- SECTION 1 -->
+  <div class="section" id="sec-1">
+    <div class="section-toggle" onclick="toggleSection('sec-1')">
+      <div class="section-line"></div>
+      <span class="section-label">
+        Ответственные
+        <svg class="section-chevron" viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <div class="section-line"></div>
+    </div>
+    <div class="section-body">
+      <div class="checklist-card">
+        <div class="item" data-key="1" data-important="false" onclick="toggle(this)">
+          <div class="item-num">01</div>
+          <div class="item-body">
+            <div class="item-title">Сменить ответственного за контакт</div>
+            <div class="item-hint">Назначьте актуального менеджера в карточке контакта</div>
+          </div>
+          <button class="skip-btn" onclick="skipItem(event, this.parentElement)">Пропустить</button>
+          <div class="item-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div>
+        </div>
+        <div class="item" data-key="2" data-important="false" onclick="toggle(this)">
+          <div class="item-num">02</div>
+          <div class="item-body">
+            <div class="item-title">Сменить ответственного за компанию</div>
+            <div class="item-hint">Назначьте актуального менеджера в карточке компании</div>
+          </div>
+          <button class="skip-btn" onclick="skipItem(event, this.parentElement)">Пропустить</button>
+          <div class="item-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section" id="sec-2">
+    <div class="section-toggle" onclick="toggleSection('sec-2')">
+      <div class="section-line"></div>
+      <span class="section-label">
+        Заполнение данных
+        <svg class="section-chevron" viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <div class="section-line"></div>
+    </div>
+    <div class="section-body">
+      <div class="checklist-card">
+        <div class="item" data-key="3" data-important="false" onclick="toggle(this)">
+          <div class="item-num">03</div>
+          <div class="item-body">
+            <div class="item-title">Завершить чат</div>
+            <div class="item-hint">Диалог закрыт после обработки клиента</div>
+          </div>
+          <button class="skip-btn" onclick="skipItem(event, this.parentElement)">Пропустить</button>
+          <div class="item-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div>
+        </div>
+        <div class="item" data-key="4" data-important="false" onclick="toggle(this)">
+          <div class="item-num">04</div>
+          <div class="item-body">
+            <div class="item-title">Заполнить имя клиента</div>
+            <div class="item-hint">Имя и фамилия — обязательные поля карточки</div>
+          </div>
+          <button class="skip-btn" onclick="skipItem(event, this.parentElement)">Пропустить</button>
+          <div class="item-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div>
+        </div>
+        <div class="item" data-key="5" data-important="false" onclick="toggle(this)">
+          <div class="item-num">05</div>
+          <div class="item-body">
+            <div class="item-title">Заполнить название компании</div>
+            <div class="item-hint">Укажите официальное или торговое название</div>
+          </div>
+          <button class="skip-btn" onclick="skipItem(event, this.parentElement)">Пропустить</button>
+          <div class="item-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div>
+        </div>
+        <div class="item" data-key="6" data-important="false" onclick="toggle(this)">
+          <div class="item-num">06</div>
+          <div class="item-body">
+            <div class="item-title">Заполнить название сделки правильно</div>
+            <div class="item-hint">Формат: Компания · Продукт · Дата — без лишних символов</div>
+          </div>
+          <button class="skip-btn" onclick="skipItem(event, this.parentElement)">Пропустить</button>
+          <div class="item-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section" id="sec-3">
+    <div class="section-toggle" onclick="toggleSection('sec-3')">
+      <div class="section-line"></div>
+      <span class="section-label">
+        Задачи и коммуникации
+        <svg class="section-chevron" viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <div class="section-line"></div>
+    </div>
+    <div class="section-body">
+      <div class="checklist-card">
+        <div class="item" data-key="7" data-important="true" onclick="toggle(this)">
+          <div class="item-num">07</div>
+          <div class="item-body">
+            <div class="item-title">Поставить дело</div>
+            <div class="item-hint">Дело не просрочено более 1 дня · Не переносится принудительно</div>
+          </div>
+          <span class="item-badge badge-danger">! ВАЖНО</span>
+          <div class="item-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div>
+        </div>
+        <div class="item" data-key="8" data-important="false" onclick="toggle(this)">
+          <div class="item-num">08</div>
+          <div class="item-body">
+            <div class="item-title">Написать комментарий и закрепить его</div>
+            <div class="item-hint">Закреплённый комментарий виден сразу в карточке сделки</div>
+          </div>
+          <button class="skip-btn" onclick="skipItem(event, this.parentElement)">Пропустить</button>
+          <div class="item-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div>
+        </div>
+        <div class="item" data-key="9" data-important="false" onclick="toggle(this)">
+          <div class="item-num">09</div>
+          <div class="item-body">
+            <div class="item-title">Передвинуть клиента на правильную стадию</div>
+            <div class="item-hint">Стадия должна отражать реальный этап переговоров</div>
+          </div>
+          <button class="skip-btn" onclick="skipItem(event, this.parentElement)">Пропустить</button>
+          <div class="item-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div>
+        </div>
+        <div class="item" data-key="10" data-important="false" onclick="toggle(this)">
+          <div class="item-num">10</div>
+          <div class="item-body">
+            <div class="item-title">Если НДЗ — написать в WhatsApp</div>
+            <div class="item-hint">Клиент недозвонился: незамедлительно отправить сообщение в WA</div>
+          </div>
+          <span class="item-badge badge-warn">НДЗ</span>
+          <div class="item-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section" id="sec-4">
+    <div class="section-toggle" onclick="toggleSection('sec-4')">
+      <div class="section-line"></div>
+      <span class="section-label">
+        Встречи и бизнес-процессы
+        <svg class="section-chevron" viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <div class="section-line"></div>
+    </div>
+    <div class="section-body">
+      <div class="checklist-card">
+        <div class="item" data-key="11" data-important="false" onclick="toggle(this)">
+          <div class="item-num">11</div>
+          <div class="item-body">
+            <div class="item-title">Все встречи зафиксированы через бизнес-процесс</div>
+            <div class="item-hint">Каждая встреча с клиентом — только через БП, не вручную</div>
+          </div>
+          <span class="item-badge badge-info">БП</span>
+          <div class="item-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div>
+        </div>
+        <div class="item" data-key="12" data-important="true" onclick="toggle(this)">
+          <div class="item-num">12</div>
+          <div class="item-body">
+            <div class="item-title">Правильное ведение дела</div>
+            <div class="item-hint">Дело не просрочено > 1 дня · Дело не перенесено принудительно</div>
+          </div>
+          <span class="item-badge badge-danger">! ВАЖНО</span>
+          <div class="item-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div>
+        </div>
+        <div class="item" data-key="13" data-important="false" onclick="toggle(this)">
+          <div class="item-num">13</div>
+          <div class="item-body">
+            <div class="item-title">После «Встреча назначена» — запустить БП «Обновить дату планируемой оплаты»</div>
+            <div class="item-hint">Запускается один раз при переходе на стадию ПОСЛЕ «Встреча назначена»</div>
+          </div>
+          <span class="item-badge badge-info">БП</span>
+          <div class="item-check"><svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="done-banner" id="done-banner">
+    <span class="done-banner-icon">✅</span>
+    <h2>Все пункты выполнены!</h2>
+    <p>Заявка обработана в соответствии с регламентом.<br>Можно переходить к следующему клиенту.</p>
+    <div class="done-meta" id="done-meta"></div>
+  </div>
+
+  <div class="hotkeys-hint">
+    <kbd>1</kbd>–<kbd>9</kbd> отметить пункт &nbsp;·&nbsp; <kbd>R</kbd> сбросить &nbsp;·&nbsp; <kbd>S</kbd> свернуть/развернуть секции
+  </div>
+
+</main>
+
+<footer class="footer">
+  <span class="footer-note">CRM Регламент · Битрикс 24</span>
+  <span class="footer-note" id="last-done-label"></span>
+</footer>
+
+<script>
+// ── TEMPLATES ──
+const TEMPLATES = {
+  all:      [1,2,3,4,5,6,7,8,9,10,11,12,13],
+  incoming: [1,2,4,5,6,7,8,9,12],
+  ndz:      [1,2,3,10,7,12],
+  repeat:   [1,2,6,7,8,9,12,13],
+};
+
+let currentTemplate = 'all';
+let startTime = null;
+
+// ── STORAGE HELPERS ──
+function lsGet(k, def) {
+  try { const v = localStorage.getItem(k); return v !== null ? JSON.parse(v) : def; }
+  catch { return def; }
+}
+function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+
+// ── INIT ──
+function init() {
+  currentTemplate = lsGet('crm_template', 'all');
+  applyTemplate(currentTemplate, false);
+
+  // Restore template button
+  document.querySelectorAll('.tpl-btn').forEach(b => {
+    const t = b.getAttribute('onclick').match(/'([^']+)'/)?.[1];
+    if (t === currentTemplate) b.classList.add('active');
+    else b.classList.remove('active');
+  });
+
+  // Restore checked state
+  const saved = lsGet('crm_state', {});
+  document.querySelectorAll('.item').forEach(item => {
+    const key = item.dataset.key;
+    if (saved[key] === 'done') item.classList.add('done');
+    if (saved[key] === 'skip') { item.classList.add('skipped'); item.style.display = 'none'; }
+  });
+
+  // Restore deal id
+  const did = lsGet('crm_deal_id', '');
+  if (did) document.getElementById('deal-id').value = did;
+
+  // Start timer if partially done
+  if (Object.keys(saved).length > 0) startTime = lsGet('crm_start_time', null);
+
+  loadStats();
+  update();
+}
+
+// ── SAVE STATE ──
+function saveState() {
+  const state = {};
+  document.querySelectorAll('.item').forEach(item => {
+    const key = item.dataset.key;
+    if (item.classList.contains('done')) state[key] = 'done';
+    else if (item.classList.contains('skipped')) state[key] = 'skip';
+  });
+  lsSet('crm_state', state);
+}
+
+// ── TOGGLE ──
+function toggle(el) {
+  if (el.classList.contains('skipped')) return;
+  if (!startTime) { startTime = Date.now(); lsSet('crm_start_time', startTime); }
+  el.classList.toggle('done');
+  saveState();
+  update();
+}
+
+// ── SKIP ──
+function skipItem(e, item) {
+  e.stopPropagation();
+  item.classList.remove('done');
+  item.classList.add('skipped');
+  item.style.transition = 'opacity 0.3s';
+  item.style.opacity = '0';
+  setTimeout(() => { item.style.display = 'none'; }, 300);
+  saveState();
+  update();
+  showToast('Пункт пропущен');
+}
+
+// ── TEMPLATE ──
+function setTemplate(name, btn) {
+  document.querySelectorAll('.tpl-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyTemplate(name, true);
+}
+
+function applyTemplate(name, reset) {
+  currentTemplate = name;
+  lsSet('crm_template', name);
+  const visible = TEMPLATES[name] || TEMPLATES.all;
+  document.querySelectorAll('.item').forEach(item => {
+    const key = parseInt(item.dataset.key);
+    if (visible.includes(key)) {
+      item.style.display = '';
+      item.style.opacity = '';
+      item.classList.remove('skipped');
+    } else {
+      item.style.display = 'none';
+    }
+    if (reset) {
+      item.classList.remove('done', 'skipped');
+    }
+  });
+  if (reset) {
+    lsSet('crm_state', {});
+    startTime = null;
+    lsSet('crm_start_time', null);
+  }
+  update();
+}
+
+// ── UPDATE ──
+function update() {
+  const visible = document.querySelectorAll('.item:not([style*="display: none"])');
+  const done = document.querySelectorAll('.item.done').length;
+  const total = visible.length;
+
+  document.getElementById('prog').style.width = total ? (done / total * 100) + '%' : '0%';
+  document.getElementById('prog-done').textContent = done;
+  document.getElementById('prog-total').textContent = total;
+
+  const banner = document.getElementById('done-banner');
+  if (done > 0 && done === total) {
+    banner.classList.add('visible');
+    banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (!banner.dataset.celebrated) {
+      banner.dataset.celebrated = '1';
+      confetti();
+      recordCompletion();
+    }
+    // time taken
+    if (startTime) {
+      const secs = Math.round((Date.now() - startTime) / 1000);
+      const mins = Math.floor(secs / 60), s = secs % 60;
+      document.getElementById('done-meta').textContent =
+        `Время обработки: ${mins > 0 ? mins + ' мин ' : ''}${s} сек`;
+    }
+  } else {
+    banner.classList.remove('visible');
+    banner.dataset.celebrated = '';
+  }
+}
+
+// ── RECORD COMPLETION ──
+function recordCompletion() {
+  const now = Date.now();
+  const today = new Date().toDateString();
+
+  let history = lsGet('crm_history', []);
+  history.push({ ts: now, date: today });
+  // keep last 200
+  if (history.length > 200) history = history.slice(-200);
+  lsSet('crm_history', history);
+
+  // avg time
+  if (startTime) {
+    let times = lsGet('crm_times', []);
+    times.push(now - startTime);
+    if (times.length > 50) times = times.slice(-50);
+    lsSet('crm_times', times);
+  }
+
+  lsSet('crm_last', now);
+  loadStats();
+  updateLastDone();
+}
+
+// ── STATS ──
+function loadStats() {
+  const history = lsGet('crm_history', []);
+  const today = new Date().toDateString();
+  const weekAgo = Date.now() - 7 * 24 * 3600 * 1000;
+
+  const todayCount = history.filter(h => h.date === today).length;
+  const weekCount  = history.filter(h => h.ts > weekAgo).length;
+
+  document.getElementById('stat-today').textContent = todayCount;
+  document.getElementById('stat-week').textContent  = weekCount;
+
+  // avg time
+  const times = lsGet('crm_times', []);
+  if (times.length > 0) {
+    const avg = Math.round(times.reduce((a, b) => a + b, 0) / times.length / 1000);
+    const m = Math.floor(avg / 60), s = avg % 60;
+    document.getElementById('stat-avg').textContent = m > 0 ? m + 'м ' + s + 'с' : s + 'с';
+  }
+
+  // streak (days with at least 1 completion)
+  const days = [...new Set(history.map(h => h.date))];
+  let streak = 0;
+  const d = new Date();
+  while (true) {
+    if (days.includes(d.toDateString())) { streak++; d.setDate(d.getDate() - 1); }
+    else break;
+  }
+  document.getElementById('stat-streak').textContent = streak;
+
+  updateLastDone();
+}
+
+function updateLastDone() {
+  const last = lsGet('crm_last', null);
+  const el = document.getElementById('last-done-label');
+  if (!last) { el.textContent = ''; return; }
+  const diff = Math.round((Date.now() - last) / 60000);
+  if (diff < 1) el.textContent = 'Последняя заявка: только что';
+  else if (diff < 60) el.textContent = `Последняя заявка: ${diff} мин назад`;
+  else {
+    const h = Math.floor(diff / 60);
+    el.textContent = `Последняя заявка: ${h} ч назад`;
+  }
+}
+
+// ── RESET ──
+function tryReset() {
+  const importantMissed = [];
+  document.querySelectorAll('.item[data-important="true"]').forEach(item => {
+    if (!item.classList.contains('done') && item.style.display !== 'none') {
+      const title = item.querySelector('.item-title').textContent;
+      importantMissed.push(title);
+    }
+  });
+  const done = document.querySelectorAll('.item.done').length;
+  if (importantMissed.length > 0 && done > 0) {
+    document.getElementById('warn-list').innerHTML = importantMissed.map(t => '• ' + t).join('<br>');
+    document.getElementById('warn-modal').classList.add('visible');
+  } else {
+    forceReset();
+  }
+}
+
+function forceReset() {
+  closeWarnModal();
+  document.querySelectorAll('.item').forEach(el => {
+    el.classList.remove('done', 'skipped');
+    el.style.display = '';
+    el.style.opacity = '';
+  });
+  applyTemplate(currentTemplate, false);
+  lsSet('crm_state', {});
+  startTime = null;
+  lsSet('crm_start_time', null);
+  showToast('Чеклист сброшен');
+  update();
+}
+
+function closeWarnModal() {
+  document.getElementById('warn-modal').classList.remove('visible');
+}
+
+// ── SECTIONS ──
+function toggleSection(id) {
+  document.getElementById(id).classList.toggle('collapsed');
+}
+
+function toggleAllSections() {
+  const secs = document.querySelectorAll('.section');
+  const anyOpen = [...secs].some(s => !s.classList.contains('collapsed'));
+  secs.forEach(s => anyOpen ? s.classList.add('collapsed') : s.classList.remove('collapsed'));
+}
+
+// ── DEAL ID ──
+function saveDealId() {
+  lsSet('crm_deal_id', document.getElementById('deal-id').value);
+}
+
+// ── HOTKEYS ──
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  const k = e.key.toLowerCase();
+  if (k === 'r') { e.preventDefault(); tryReset(); return; }
+  if (k === 's') { e.preventDefault(); toggleAllSections(); return; }
+  const n = parseInt(k);
+  if (!isNaN(n) && n >= 1 && n <= 9) {
+    const items = document.querySelectorAll('.item:not([style*="display: none"])');
+    if (items[n - 1]) toggle(items[n - 1]);
+  }
+});
+
+// ── TOAST ──
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── CONFETTI ──
+function confetti() {
+  const colors = ['#2a7c5a','#5ab88a','#f0c040','#f57c50','#60a0f0','#c070e0'];
+  for (let i = 0; i < 60; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.cssText = `
+      left: ${Math.random() * 100}vw;
+      top: -10px;
+      background: ${colors[Math.floor(Math.random() * colors.length)]};
+      width: ${6 + Math.random() * 6}px;
+      height: ${6 + Math.random() * 6}px;
+      border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+      animation-duration: ${1.2 + Math.random() * 1.2}s;
+      animation-delay: ${Math.random() * 0.6}s;
+    `;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2800);
+  }
+}
+
+// ── WARN MODAL CLOSE ON BG ──
+document.getElementById('warn-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeWarnModal();
+});
+
+init();
+</script>
+</body>
+</html>
