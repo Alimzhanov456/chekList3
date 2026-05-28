@@ -1034,7 +1034,33 @@ function toggleExpand(el) {
   updateProgress();
 }
 
-function toggleSub(el) { el.classList.toggle('done'); }
+function toggleSub(el) {
+  el.classList.toggle('done');
+  
+  // Найти родительский .sub-items контейнер
+  const subItems = el.closest('.sub-items');
+  if (!subItems) return;
+  
+  // Найти предшествующий .item (родительский пункт с дропдауном)
+  const parentItem = subItems.previousElementSibling;
+  if (!parentItem || !parentItem.classList.contains('item')) return;
+  
+  // Проверить, все ли sub-items отмечены
+  const all = subItems.querySelectorAll('.sub-item');
+  const done = subItems.querySelectorAll('.sub-item.done');
+  
+  if (all.length > 0 && all.length === done.length) {
+    // Все отмечены — отмечаем родителя как done
+    parentItem.classList.add('done');
+    parentItem.classList.remove('open');
+  } else {
+    // Не все отмечены — снимаем done с родителя
+    parentItem.classList.remove('done');
+  }
+  
+  saveState();
+  updateProgress();
+}
 
 function toggleSP(el) {
   if (!startTime) { startTime = Date.now(); lsSet('day_start', startTime); }
